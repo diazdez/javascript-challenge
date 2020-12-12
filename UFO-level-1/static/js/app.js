@@ -34,10 +34,37 @@ tableData.forEach(function(sighting) {
 // ** Use a date form in your HTML document and write JavaScript code that will listen for events 
 // and search through the date/time column to find rows that match user input.
 
-
+// button is an id in html (so we use # )
 var button = d3.select("#filter-btn");
+var form = d3.select("form");
+// creating click handler using d3 ".on"
+button.on("click", runEnter);
+form.on("submit", runEnter);
 
-// using d3 `.on` to attach a click handler
-button.on("click", function() {
+
+// complete the event handler function for the form
+function runEnter() {
+  // to prevent the page from refreshing using default 
+  d3.event.preventDefault();
+  // select the input element and get the raw HTML node (class "form-group")
+  var inputElement = d3.select(".form-control");
+  // get the value property of the input element
+  var inputDate = inputElement.property("value");
+  // printing the value to the console: 
+  console.log(inputDate)
+  // filter data for the date value to get data that is searched for
+  var filteredData = tableData.filter(sighting => sighting.datetime === inputDate);
+  console.log(filteredData);
+  // select the table body to insert table rows and cells
+  var tbody = d3.select("tbody")
+  // clear the table body to insert selected date values
+  tbody.html("");
+
   
-})
+  filteredData.forEach(function(sighting){
+    var row = tbody.append("tr");
+    Object.entries(sighting).forEach(function([key, value]){ 
+      var cell = row.append("td").text(value); 
+    })
+  })
+};
